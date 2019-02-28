@@ -2,7 +2,7 @@ package job_worker
 
 type Dispatcher struct {
 	// A pool of workers channels that are registered with the dispatcher
-	WorkerPool chan chan Job
+	WorkerPool chan Worker
 
 	maxWorkers int
 
@@ -13,7 +13,7 @@ type Dispatcher struct {
 }
 
 func NewDispatcher(maxWorkers, maxQueueSize int) *Dispatcher {
-	pool := make(chan chan Job, maxWorkers)
+	pool := make(chan Worker, maxWorkers)
 	jobQueue := make(chan Job, maxQueueSize)
 	return &Dispatcher{WorkerPool: pool, maxWorkers: maxWorkers, JobQueue: jobQueue}
 }
@@ -47,10 +47,10 @@ func (d *Dispatcher) dispatch() {
 			go func(job Job) {
 				// try to obtain a worker job channel that is available.
 				// this will block until a worker is idle
-				jobChannel := <-d.WorkerPool
+				worker := <-d.WorkerPool
 
 				// dispatch the job to the worker job channel
-				jobChannel <- job
+				worker.JobChannel <- job
 			}(job)
 		}
 	}

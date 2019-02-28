@@ -4,12 +4,12 @@ import "log"
 
 // Worker represents the worker that executes the job
 type Worker struct {
-	WorkerPool chan chan Job
+	WorkerPool chan Worker
 	JobChannel chan Job
 	quit       chan bool
 }
 
-func NewWorker(workerPool chan chan Job) Worker {
+func NewWorker(workerPool chan Worker) Worker {
 	return Worker{
 		WorkerPool: workerPool,
 		JobChannel: make(chan Job),
@@ -23,7 +23,7 @@ func (w Worker) Start() {
 	go func() {
 		for {
 			// register the current worker into the worker queue.
-			w.WorkerPool <- w.JobChannel
+			w.WorkerPool <- w
 
 			select {
 			case job := <-w.JobChannel:

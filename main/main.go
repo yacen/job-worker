@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	MaxWorker = 100  //os.Getenv("MAX_WORKERS")
-	MaxQueue  = 1000 //os.Getenv("MAX_QUEUE")
+	MaxWorker = 100 //os.Getenv("MAX_WORKERS")
+	MaxQueue  = 10  //os.Getenv("MAX_QUEUE")
 )
 
 type PayloadImpl struct {
